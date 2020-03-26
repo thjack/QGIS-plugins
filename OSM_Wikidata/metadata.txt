@@ -1,0 +1,14 @@
+[general]
+name=OSM_Wikidata
+description=This plugin is a proof of concept for interchanging data between OSM and Wikidata
+version=0.1
+qgisMinimumVersion=3.4
+author=Jo
+email=winfixit@gmail.com
+about=This plugin is a proof of concept for interchanging data between OSM and Wikidata
+tracker=
+tags=python, OpenStreetMap, Wikidata
+category=OpenStreetMap
+icon=img/OpenStreetMap_Wikidata_logo.svg
+experimental=True
+deprecated=False
