@@ -28,10 +28,10 @@ from PyQt5.QtCore import (
     QPointF,
     QDate,
     QTimer,
-    QRegExp,
+    QRegExp
 )
 from PyQt5.QtGui import (QIcon, QColor, QPainter, QIntValidator, QFont, QStandardItemModel, QStandardItem,
-                         QTextDocument, QTextCharFormat, QSyntaxHighlighter)
+                         QTextDocument, QTextCharFormat, QSyntaxHighlighter, QTextCursor)
 from PyQt5.QtWidgets import (
     QFrame,
     QAction,
@@ -146,6 +146,16 @@ class OSMWDPlainTextEdit(QPlainTextEdit):
         if text:
             self.setPlainText(text)
         self.textChanged.connect(self.text_changed)
+        self.close_parentheses = {'(': ')',
+                                  '[': ']',
+                                  '{': '}'}
+
+    def keyPressEvent(self, key):
+        # print(dir(key.KeyRelease))
+        super().keyPressEvent(key)
+        if key.text() in self.close_parentheses:
+            self.insertPlainText(self.close_parentheses[key.text()])
+            self.moveCursor(QTextCursor.PreviousCharacter)
 
     def text_changed(self):
         self.highlighter.highlightBlock(self.toPlainText())
@@ -689,15 +699,6 @@ class OSMWikidataDock:
             for key, contents in entry.items():
                 self.text_edit[key] = OSMWDPlainTextEdit(self.dockwidget.cleanup_data_widget_tab,
                                                          text='\n'.join(contents))
-                # font = QFont()
-                # font.setFamily("Courier")
-                # font.setFixedPitch(True)
-                # font.setPointSize(6)
-                # self.text_edit[key].setFont(font)
-                # highlighter = RegexHighlighter(self.text_edit[key].document())
-                # self.text_edit[key].setPlainText('\n'.join(contents))
-                # # QgsMessageLog.logMessage(str(self.text_edit[key].toPlainText()),
-                # #                          OSMWD_TOOLS_LOG, Qgis.Info)
                 self.text_edit[key].setMinimumHeight(len(contents) * 17 + 10)
                 self.dockwidget.cleanup_data_widget_form_layout.addRow(key, self.text_edit[key])
 
