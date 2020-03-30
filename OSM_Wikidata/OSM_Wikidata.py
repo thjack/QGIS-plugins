@@ -150,6 +150,11 @@ class OSMWDPlainTextEdit(QPlainTextEdit):
                                   '[': ']',
                                   '{': '}'}
 
+        stdMenu = self.createStandardContextMenu()
+        newMenu = QMenu("I'm new!")
+        stdMenu.insertMenu(stdMenu.actions()[0], newMenu)
+        # menu.popup(ui.textedit.viewport().mapToGlobal(pos))
+
     def keyPressEvent(self, key):
         # print(dir(key.KeyRelease))
         super().keyPressEvent(key)
@@ -550,10 +555,13 @@ class DockOSMWD(QgsDockWidget):
 
         self.setWidget(self.tabs_widget)
 
+        self.tests_widget = QWidget(self)
+        self.tests_widget.setLayout(QVBoxLayout(self.tabs_widget))
+
         self.cleanup_data_widget_tab = QScrollArea()
         self.cleanup_data_content_widget = QWidget()
         self.cleanup_data_widget_tab.setWidget(self.cleanup_data_content_widget)
-        self.cleanup_data_widget_form_layout = QFormLayout(self.cleanup_data_content_widget)
+        self.cleanup_data_widget_grid_layout = QGridLayout(self.cleanup_data_content_widget)
         self.cleanup_data_widget_tab.setWidgetResizable(True)
 
         self.interpret_widget = QWidget(self)
@@ -565,10 +573,22 @@ class DockOSMWD(QgsDockWidget):
         self.references_widget = QWidget(self)
         self.references_widget.setLayout(QVBoxLayout(self.tabs_widget))
 
+        self.items_widget = QWidget(self)
+        self.items_widget.setLayout(QVBoxLayout(self.tabs_widget))
+
+        self.properties_widget = QWidget(self)
+        self.properties_widget.setLayout(QVBoxLayout(self.tabs_widget))
+
+        self.references_widget = QWidget(self)
+        self.references_widget.setLayout(QVBoxLayout(self.tabs_widget))
+
+        self.tabs_widget.addTab(self.tests_widget, 'Tests')
         self.tabs_widget.addTab(self.cleanup_data_widget_tab, 'Cleanup tags')
         self.tabs_widget.addTab(self.interpret_widget, 'Interpret tags')
         self.tabs_widget.addTab(self.process_widget, 'Process')
-        self.tabs_widget.addTab(self.references_widget, 'References')
+        self.tabs_widget.addTab(self.items_widget, 'WD Items')
+        self.tabs_widget.addTab(self.properties_widget, 'WD Properties')
+        self.tabs_widget.addTab(self.references_widget, 'WD References')
 
         buttons_dict = {
             'sc_500': ['copy', 'add', 'save', 'delete'],
@@ -599,6 +619,7 @@ class OSMWikidataDock:
         self.toolbar.setObjectName('OSM_Wikidata')
 
         self.text_edit = {}
+        self.line_edit = {}
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -694,13 +715,19 @@ class OSMWikidataDock:
             data = json.load(data_file)
         # from pprint import  pprint
         # pprint(data)
+        i = 0
         for entry in data:
             # pprint(entry)
             for key, contents in entry.items():
                 self.text_edit[key] = OSMWDPlainTextEdit(self.dockwidget.cleanup_data_widget_tab,
                                                          text='\n'.join(contents))
                 self.text_edit[key].setMinimumHeight(len(contents) * 17 + 10)
-                self.dockwidget.cleanup_data_widget_form_layout.addRow(key, self.text_edit[key])
+                self.line_edit[key] = QLineEdit(key, self.dockwidget.cleanup_data_widget_tab)
+                self.line_edit[key].setFixedWidth(140)
+                self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.text_edit[key], i, 0, 1, 3)
+                self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.line_edit[key], i, 3)
+                print(i)
+                i += 1
 
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
         self.iface.openMessageLog()
