@@ -1,66 +1,159 @@
-[
- {"Early Child Development": [
-  "\\s                 # space",
-  "[E](arly)*         # Early, but usually abbreviated to ECD",
-  "\\.*\\s*             # Could be with . or spaces in between",
-  "[Cc]*(hild)*       # Child",
-  "\\.*/*\\s*",
-  "[Dd](evelopment)*  # Development",
-  "\\.*\\s              # may have a ., must have a space"]},
- {"School":
-  ["\\.*/*\\\\*\\s*([Ss](chool|chl|ch|c)\\.*|Chool)"]},
- {" & ": ["\\s*&\\s*"]},
- {"II": ["Ii"]},
- {"III": ["Iii"]},
- {"Michael": ["Micheal"]},
- {"Magdalena": ["Magdalane"]},
- {"Clare": ["clare"]},
- {"Lawrence": ["Lawrance"]},
- {"Dominic": ["Domnic"]},
- {"Martyr": ["Matyr"]},
- {"Aloysius": ["Aloysious"]},
- {"Sacred Heart": ["S[ae]cre[dt]\\s+Heart"]},
- {"Modern": ["Mor*dern"]},
- {"Center": ["Cntr"]},
- {"Academy": ["Acc*ademy"]},
- {"Teletubbies": ["Telet[au]bb*ies"]},
- {"Business": ["buss*iness*"]},
- {" Preparatory": ["\\sPrep(\\.|aratory)*\\s"]},
- {" Nursery and Primary": ["\\sN(ur|ursery)*/\\s*Pr*(im|imary)*"]},
- {"International": ["Intern*ational"]},
- {"Integrated": ["Intergrated"]},
- {"Junior": ["Juniour"]},
- {"Shepherd": ["Sheph*[ea]rd"]},
- {"Saint ": ["^Saintt*\\s"]},
- {"Saint ": ["^S[tT][\\.|\\s]*"]},
- {"Standard": ["Stardard"]},
- {"Roman Catholic Church": ["\\bR\\.*C\\.*C\\.*\\b"]}, 
- {"Roman Catholic": ["\\bR\\.*C\\.*\\b"]}, 
- {"Seventh-day Adventist": [
-   "\\b              # word boundary",
-   "[Ss](eventh)*   # Seventh, could be abbreviated",
-   "\\.*\\s*-*        # may have a . or a space or a dash",
-   "[Dd](ay)*       # Day, could be abbreviated",
-   "\\.*\\s*          # may have a . or a space",
-   "[Aa](dventist)* # Adventist, could be abbreviated",
-   "\\.*\\b           # may have a ., must end at word boundary"]},
- {"Church of Uganda": [
-   "\\b              # word boundary",
-   "[Cc](hurch)*    # Church, but can also be abbreviated as C/U or CoU",
-   "\\.*\\s*          # or C.O.U.",
-   "([Oo]f*|/)*     # of is not necessarily present",
-   "\\.*\\s*",
-   "[Uu](ganda)*    # Uganda, may be abbreviated",
-   "\\.*\\b           # may have a ., must end at word boundary"]},
- {"Saint Elizabeth": ["Stelizabeth"]},
- {"Divine": ["^Devine"]},
- {"Quran": ["Quaran"]},
- {"Boarding": ["Bourding"]},
- {"College": ["Coolege"]},
- {"Highway": ["HighWay"]},
- {" Primary ": ["\\sP(r*\\\\*(i|im|ima[rc]*y|mary)*|\\.)\\s"]},
- {" School ": ["\\s((S(chool|chl|ch|c)\\.*)|Chool)"]},
- {"Secondary School ": ["\\bS(\\.*|\\s*)S\\b\\.*-*"]},
- {"": ["(^\\s+|\\s+$)"]},
- {" ": ["(\\s\\s+)"]}
-]
+{"cleanup":
+  {"name":
+    [
+      {"Early Child Development": [
+      "\\s                 # space",
+      "[E](arly)*         # Early, but usually abbreviated to ECD",
+      "\\.*\\s*             # Could be with . or spaces in between",
+      "[Cc]*(hild)*       # Child",
+      "\\.*/*\\s*",
+      "[Dd](evelopment)*  # Development",
+      "\\.*\\s              # may have a ., must have a space"]},
+      {"School":
+      ["\\.*/*\\\\*\\s*([Ss](chool|chl|ch|c)\\.*|Chool)"]},
+      {" & ": ["\\s*&\\s*"]},
+      {"II": ["Ii"]},
+      {"III": ["Iii"]},
+      {"Michael": ["Micheal"]},
+      {"Magdalena": ["Magdalane"]},
+      {"Clare": ["clare"]},
+      {"Lawrence": ["Lawrance"]},
+      {"Dominic": ["Domnic"]},
+      {"Martyr": ["Matyr"]},
+      {"Aloysius": ["Aloysious"]},
+      {"Sacred Heart": ["S[ae]cre[dt]\\s+Heart"]},
+      {"Modern": ["Mor*dern"]},
+      {"Center": ["Cntr"]},
+      {"Academy": ["Acc*ademy"]},
+      {"Teletubbies": ["Telet[au]bb*ies"]},
+      {"Business": ["buss*iness*"]},
+      {" Preparatory": ["\\sPrep(\\.|aratory)*\\s"]},
+      {" Nursery and Primary": ["\\sN(ur|ursery)*/\\s*Pr*(im|imary)*"]},
+      {"International": ["Intern*ational"]},
+      {"Integrated": ["Intergrated"]},
+      {"Junior": ["Juniour"]},
+      {"Shepherd": ["Sheph*[ea]rd"]},
+      {"Saint ": ["^Saintt*\\s"]},
+      {"Saint ": ["^S[tT][\\.|\\s]*"]},
+      {"Standard": ["Stardard"]},
+      {"Roman Catholic Church": ["\\bR\\.*C\\.*C\\.*\\b"]},
+      {"Roman Catholic": ["\\bR\\.*C\\.*\\b"]},
+      {"Seventh-day Adventist": [
+       "\\b              # word boundary",
+       "[Ss](eventh)*   # Seventh, could be abbreviated",
+       "\\.*\\s*-*        # may have a . or a space or a dash",
+       "[Dd](ay)*       # Day, could be abbreviated",
+       "\\.*\\s*          # may have a . or a space",
+       "[Aa](dventist)* # Adventist, could be abbreviated",
+       "\\.*\\b           # may have a ., must end at word boundary"]},
+      {"Church of Uganda": [
+       "\\b              # word boundary",
+       "[Cc](hurch)*    # Church, but can also be abbreviated as C/U or CoU",
+       "\\.*\\s*          # or C.O.U.",
+       "([Oo]f*|/)*     # of is not necessarily present",
+       "\\.*\\s*",
+       "[Uu](ganda)*    # Uganda, may be abbreviated",
+       "\\.*\\b           # may have a ., must end at word boundary"]},
+      {"Saint Elizabeth": ["Stelizabeth"]},
+      {"Divine": ["^Devine"]},
+      {"Quran": ["Quaran"]},
+      {"Boarding": ["Bourding"]},
+      {"College": ["Coolege"]},
+      {"Highway": ["HighWay"]},
+      {" Primary ": ["\\sP(r*\\\\*(i|im|ima[rc]*y|mary)*|\\.)\\s"]},
+      {" School ": ["\\s((S(chool|chl|ch|c)\\.*)|Chool)"]},
+      {"Secondary School ": ["\\bS(\\.*|\\s*)S\\b\\.*-*"]},
+      {"": ["(^\\s+|\\s+$)"]},
+      {" ": ["(\\s\\s+)"]},
+      {"school": ["(?ux)\\.*/*\\\\*\\s*([Ss](chool|chl|ch|c)\\.*|Chool)"]},
+      {" Nursery and Primary School": "(?uxi)\\sN(ur|ursery)*/\\s*Pr*(im|imary)*"},
+      {" Preparatory School": "(?uxi)sPrep(.|aratory)*s<<school>>"}
+    ]
+  },
+  "Interpret": {
+    "name": [
+      {"Seventh-day Adventist": {
+            "OSM": [
+              {"operator": "Seventh-day Adventist Church"},
+              {"operator:wikidata": "Q104319"},
+              {"religion": "christian"},
+              {"denomination": "adventist"}
+            ],
+            "WD": ["seventhDayAdventist_statement"]
+          }
+      },
+      {"(?ux)\\sNursery\\s(and|&)\\sPrimary\\s<<school>>": {
+            "OSM": [{"isced:level": "0,1"}],
+             "WD": ["nurserySchool_statement", "primarySchool_statement"]
+          }
+      },
+      {"Church of Uganda": {
+          "OSM": [{"operator": "Church of Uganda"},
+                  {"operator:wikidata": "Q1723759"},
+                  {"religion": "christian"},
+                  {"denomination": "anglican"}],
+           "WD": ["churchOfUgandaStatement"]
+          }
+      },
+      {"Roman Catholic": {"OSM": [{"religion": "christian"},
+                         {"denomination": "roman_catholic"}]
+          }
+      },
+      {"<<Early Child Development>>": {
+          "OSM": [{"operator": "Early Childhood Development"}]
+        }
+      },
+      {"<<Nursery and Primary School>>": {
+        "OSM": [{"isced:level": "0;1"}],
+        "WD": ["primarySchoolStatement", "nurserySchoolStatement"]}
+      },
+      {"<<Nursery School>>": {
+        "OSM": [{"isced:level": "0"}],
+        "WD": ["nurserySchoolStatement"]
+      }
+      },
+      {"<<kindergarten>>": {
+        "OSM": [{"isced:level": "0"}],
+        "WD": ["nurserySchoolStatement"]}
+      },
+      {"<<Primary School>>": {
+        "OSM": [{"isced:level": "1"}
+        ],
+        "WD": ["primarySchoolStatement"]}
+      },
+      {"<<Secondary School>>": {
+        "OSM": [{"isced:level": "2;3;4"}],
+        "WD": ["secondarySchoolStatement"]}
+      }
+    ]
+  },
+  "Wikidata items":
+  {
+    "ubos_list_of_schools_item": "Q22679902"
+  },
+  "Wikidata properties":
+  {
+    "operated_by_property": "P137",
+    "data_item_property": "P248",
+    "instanceOf": "P31",
+    "operatedByProperty": "P137",
+    "refUrlProperty": "P854",
+    "administrativeRegionProperty": "P131",
+    "coordinatesProperty": "P625",
+    "countryProperty": "P17"
+  },
+  "Wikidata references":
+  {
+    "ubos_reference": ["data_item_property", "ubos_list_of_schools_item"]
+  },
+  "Wikidata statements":
+  {
+    "countryUganda_statement": ["Q1036", "ubos_reference"],
+    "primarySchool_statement": ["Q9842", "ubos_reference"],
+    "nurserySchool_statement": ["Q1076052", "ubos_reference"],
+    "secondarySchool_statement": ["Q159334", "ubos_reference"],
+    "school_statement": ["Q3914", "ubos_reference"],
+    "churchOfUganda_statement": ["Q1723759", "ubos_reference"],
+    "seventhDayAdventist_statement": ["operatedByProperty", "Q104319", "ubos_reference"]
+  }
+}
