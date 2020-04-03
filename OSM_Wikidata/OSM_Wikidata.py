@@ -579,6 +579,9 @@ class DockOSMWD(QgsDockWidget):
         self.properties_widget = QWidget(self)
         self.properties_widget.setLayout(QVBoxLayout(self.tabs_widget))
 
+        self.statements_widget = QWidget(self)
+        self.statements_widget.setLayout(QVBoxLayout(self.tabs_widget))
+
         self.references_widget = QWidget(self)
         self.references_widget.setLayout(QVBoxLayout(self.tabs_widget))
 
@@ -588,6 +591,7 @@ class DockOSMWD(QgsDockWidget):
         self.tabs_widget.addTab(self.process_widget, 'Process')
         self.tabs_widget.addTab(self.items_widget, 'WD Items')
         self.tabs_widget.addTab(self.properties_widget, 'WD Properties')
+        self.tabs_widget.addTab(self.statements_widget, 'WD Statements')
         self.tabs_widget.addTab(self.references_widget, 'WD References')
 
         buttons_dict = {
@@ -713,21 +717,37 @@ class OSMWikidataDock:
         cleanup_file = Path(__file__).resolve().parent / 'cleanup.json'
         with open(cleanup_file) as data_file:
             data = json.load(data_file)
-        # from pprint import  pprint
+        from pprint import  pprint
         # pprint(data)
-        i = 0
-        for entry in data:
-            # pprint(entry)
-            for key, contents in entry.items():
-                self.text_edit[key] = OSMWDPlainTextEdit(self.dockwidget.cleanup_data_widget_tab,
-                                                         text='\n'.join(contents))
-                self.text_edit[key].setMinimumHeight(len(contents) * 17 + 10)
-                self.line_edit[key] = QLineEdit(key, self.dockwidget.cleanup_data_widget_tab)
-                self.line_edit[key].setFixedWidth(140)
-                self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.text_edit[key], i, 0, 1, 3)
-                self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.line_edit[key], i, 3)
-                print(i)
-                i += 1
+        for group in data:
+            i = 0
+            # pprint(group)
+            for tag in data[group]:
+                print(tag)
+                for entry in data[group][tag]:
+                    print(entry)
+                    # pprint(entry)
+                    if group == 'cleanup':
+                        for key, contents in entry.items():
+                            self.text_edit[key] = OSMWDPlainTextEdit(self.dockwidget.cleanup_data_widget_tab,
+                                                                     text='\n'.join(contents))
+                            self.text_edit[key].setMinimumHeight(len(contents) * 17 + 10)
+                            self.line_edit[key] = QLineEdit(key, self.dockwidget.cleanup_data_widget_tab)
+                            self.line_edit[key].setFixedWidth(140)
+                            self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.text_edit[key], i, 0, 1, 3)
+                            self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.line_edit[key], i, 3)
+                            print(i)
+                            i += 1
+                    elif group == 'Interpret':
+                        pass
+                    elif group == 'Wikidata items':
+                        pass
+                    elif group == 'Wikidata properties':
+                        pass
+                    elif group == 'Wikidata references':
+                        pass
+                    elif group == 'Wikidata statements':
+                        pass
 
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
         self.iface.openMessageLog()

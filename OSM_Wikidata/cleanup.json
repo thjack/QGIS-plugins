@@ -71,36 +71,46 @@
     ]
   },
   "Interpret": {
+    "*": [
+      {"*": {
+        "OSM": [
+          {"amenity": "school"}
+        ],
+        "WD": ["country Uganda statement"]}
+      }
+      ],
     "name": [
       {"Seventh-day Adventist": {
-            "OSM": [
-              {"operator": "Seventh-day Adventist Church"},
-              {"operator:wikidata": "Q104319"},
-              {"religion": "christian"},
-              {"denomination": "adventist"}
-            ],
-            "WD": ["seventhDayAdventist_statement"]
-          }
+        "OSM": [
+          {"operator": "Seventh-day Adventist Church"},
+          {"operator:wikidata": "Q104319"},
+          {"religion": "christian"},
+          {"denomination": "adventist"}
+        ],
+        "WD": ["seventh Day Adventist statement"]
+      }
       },
       {"(?ux)\\sNursery\\s(and|&)\\sPrimary\\s<<school>>": {
-            "OSM": [{"isced:level": "0,1"}],
-             "WD": ["nurserySchool_statement", "primarySchool_statement"]
-          }
+          "OSM": [{"isced:level": "0,1"}],
+           "WD": ["nurserySchool_statement", "primarySchool_statement"]
+        }
       },
       {"Church of Uganda": {
-          "OSM": [{"operator": "Church of Uganda"},
-                  {"operator:wikidata": "Q1723759"},
-                  {"religion": "christian"},
-                  {"denomination": "anglican"}],
-           "WD": ["churchOfUgandaStatement"]
-          }
+        "OSM": [{"operator": "Church of Uganda"},
+                {"operator:wikidata": "Q1723759"},
+                {"religion": "christian"},
+                {"denomination": "anglican"}],
+         "WD": ["churchOfUgandaStatement"]
+        }
       },
-      {"Roman Catholic": {"OSM": [{"religion": "christian"},
-                         {"denomination": "roman_catholic"}]
-          }
+      {"Roman Catholic": {
+        "OSM": [
+          {"religion": "christian"},
+          {"denomination": "roman_catholic"}]
+        }
       },
       {"<<Early Child Development>>": {
-          "OSM": [{"operator": "Early Childhood Development"}]
+        "OSM": [{"operator": "Early Childhood Development"}]
         }
       },
       {"<<Nursery and Primary School>>": {
@@ -117,8 +127,7 @@
         "WD": ["nurserySchoolStatement"]}
       },
       {"<<Primary School>>": {
-        "OSM": [{"isced:level": "1"}
-        ],
+        "OSM": [{"isced:level": "1"}],
         "WD": ["primarySchoolStatement"]}
       },
       {"<<Secondary School>>": {
@@ -129,31 +138,30 @@
   },
   "Wikidata items":
   {
-    "ubos_list_of_schools_item": "Q22679902"
+    "UBOS list of schools": "Q22679902"
   },
   "Wikidata properties":
   {
-    "operated_by_property": "P137",
-    "data_item_property": "P248",
-    "instanceOf": "P31",
-    "operatedByProperty": "P137",
-    "refUrlProperty": "P854",
-    "administrativeRegionProperty": "P131",
-    "coordinatesProperty": "P625",
-    "countryProperty": "P17"
+    "operated by": "P137",
+    "stated in": "P248",
+    "instance of": "P31",
+    "ref url": "P854",
+    "administrative region": "P131",
+    "coordinates": "P625",
+    "country": "P17"
   },
   "Wikidata references":
   {
-    "ubos_reference": ["data_item_property", "ubos_list_of_schools_item"]
+    "ubos_reference": ["stated in", "UBOS list of schools"]
   },
   "Wikidata statements":
   {
-    "countryUganda_statement": ["Q1036", "ubos_reference"],
-    "primarySchool_statement": ["Q9842", "ubos_reference"],
-    "nurserySchool_statement": ["Q1076052", "ubos_reference"],
-    "secondarySchool_statement": ["Q159334", "ubos_reference"],
-    "school_statement": ["Q3914", "ubos_reference"],
-    "churchOfUganda_statement": ["Q1723759", "ubos_reference"],
-    "seventhDayAdventist_statement": ["operatedByProperty", "Q104319", "ubos_reference"]
+    "country Uganda statement": ["Q1036", ["ubos_reference"]],
+    "primary school statement": ["Q9842", ["ubos_reference"]],
+    "nursery school statement": ["Q1076052", ["ubos_reference"]],
+    "secondary school statement": ["Q159334", ["ubos_reference"]],
+    "school statement": ["Q3914", ["ubos_reference"]],
+    "church Of Uganda statement": ["Q1723759", ["ubos_reference"]],
+    "seventh Day Adventist statement": ["operated by", "Q104319", ["ubos_reference"]]
   }
 }
