@@ -1,0 +1,7 @@
+SELECT ?property ?propertyLabel ?propertyDescription (GROUP_CONCAT(DISTINCT(?altLabel); separator = ", ") AS ?altLabel_list) WHERE {
+    ?property a wikibase:Property .
+    OPTIONAL { ?property skos:altLabel ?altLabel . FILTER (lang(?altLabel) = "en") }
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "en" .}
+ }
+GROUP BY ?property ?propertyLabel ?propertyDescription
+LIMIT 5000
