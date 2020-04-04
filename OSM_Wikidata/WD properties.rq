@@ -1,7 +1,11 @@
-SELECT ?property ?propertyLabel ?propertyDescription (GROUP_CONCAT(DISTINCT(?altLabel); separator = ", ") AS ?altLabel_list) WHERE {
+SELECT ?property ?propertyId ?propertyLabel ?propertyDescription (GROUP_CONCAT(DISTINCT(?altLabel); separator = ", ") AS ?altLabel_list) WHERE {
     ?property a wikibase:Property .
+    BIND( STR(?property) AS ?string ).
+    BIND( REPLACE( ?string,"http://www.wikidata.org/entity/P","" ) AS ?propertyId ).
+    FILTER (xsd:integer(?propertyId) > 6000).
     OPTIONAL { ?property skos:altLabel ?altLabel . FILTER (lang(?altLabel) = "en") }
     SERVICE wikibase:label { bd:serviceParam wikibase:language "en" .}
+
  }
-GROUP BY ?property ?propertyLabel ?propertyDescription
-LIMIT 5000
+GROUP BY ?property ?propertyId ?propertyLabel ?propertyDescription
+LIMIT 3000
