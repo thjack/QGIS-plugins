@@ -10,7 +10,10 @@
  ***************************************************************************
 """
 import json
+import pickle
 import re
+import pywikibot
+from pywikibot.data import api
 
 from .deploy import version
 from pathlib import Path
@@ -208,7 +211,7 @@ class OSMWDComboBox(QComboBox):
 
     or when the user selects 1 value manually
     """
-    def __init__(self, name, column_name, identifier=None, update_method=None):
+    def __init__(self, name, column_name, update_method=None):
         super().__init__()
         self.items = {}
         self.reverse_items = {}
@@ -223,8 +226,6 @@ class OSMWDComboBox(QComboBox):
         # only to work when the box is explicitly selected
         self.setFocusPolicy(Qt.StrongFocus)
         self.activated.connect(self.changed_by_user)
-        self.setStyleSheet('width: 200px;')
-        self.setContentsMargins(0, 0, 0, 0)
         self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         self.update_method = update_method
 
@@ -325,14 +326,22 @@ class OSMWDComboBox(QComboBox):
         else:
             return ''
 
-    def changed_by_preset(self):
+    def changed_by_user(self, new_index=None):
         self.changed = True
         self.setStyleSheet('background-color: rgb(242,248,141); font-weight:bold;')
-
-    def changed_by_user(self, new_index=None):
-        self.changed_by_preset()
         if self.update_method:
             self.update_method()
+
+
+class PropertiesComboBox(OSMWDComboBox):
+    def __init__(self, properties):
+        super().__init__('', '')
+        properties_list = []
+        for wd_property in properties:
+            self.add_item(properties[wd_property], wd_property)
+            properties_list.append(properties[wd_property])
+        self.add_completer(properties_list)
+        del(properties_list)
 
 
 class OSMWDDateEdit(QDateEdit):
@@ -564,35 +573,43 @@ class DockOSMWD(QgsDockWidget):
         self.cleanup_data_widget_grid_layout = QGridLayout(self.cleanup_data_content_widget)
         self.cleanup_data_widget_tab.setWidgetResizable(True)
 
-        self.interpret_widget = QWidget(self)
-        self.interpret_widget.setLayout(QVBoxLayout(self.tabs_widget))
+        self.interpret_widget_tab = QScrollArea()
+        self.interpret_content_widget = QWidget()
+        self.interpret_widget_tab.setWidget(self.interpret_content_widget)
+        self.interpret_widget_grid_layout = QGridLayout(self.interpret_content_widget)
+        self.interpret_widget_tab.setWidgetResizable(True)
 
-        self.process_widget = QWidget(self)
-        self.process_widget.setLayout(QVBoxLayout(self.tabs_widget))
+        self.items_widget_tab = QScrollArea()
+        self.items_content_widget = QWidget()
+        self.items_widget_tab.setWidget(self.items_content_widget)
+        self.items_widget_grid_layout = QGridLayout(self.items_content_widget)
+        self.items_widget_tab.setWidgetResizable(True)
 
-        self.references_widget = QWidget(self)
-        self.references_widget.setLayout(QVBoxLayout(self.tabs_widget))
+        self.properties_widget_tab = QScrollArea()
+        self.properties_content_widget = QWidget()
+        self.properties_widget_tab.setWidget(self.properties_content_widget)
+        self.properties_widget_grid_layout = QGridLayout(self.properties_content_widget)
+        self.properties_widget_tab.setWidgetResizable(True)
 
-        self.items_widget = QWidget(self)
-        self.items_widget.setLayout(QVBoxLayout(self.tabs_widget))
+        self.statements_widget_tab = QScrollArea()
+        self.statements_content_widget = QWidget()
+        self.statements_widget_tab.setWidget(self.statements_content_widget)
+        self.statements_widget_grid_layout = QGridLayout(self.statements_content_widget)
+        self.statements_widget_tab.setWidgetResizable(True)
 
-        self.properties_widget = QWidget(self)
-        self.properties_widget.setLayout(QVBoxLayout(self.tabs_widget))
-
-        self.statements_widget = QWidget(self)
-        self.statements_widget.setLayout(QVBoxLayout(self.tabs_widget))
-
-        self.references_widget = QWidget(self)
-        self.references_widget.setLayout(QVBoxLayout(self.tabs_widget))
+        self.references_widget_tab = QScrollArea()
+        self.references_content_widget = QWidget()
+        self.references_widget_tab.setWidget(self.references_content_widget)
+        self.references_widget_grid_layout = QGridLayout(self.references_content_widget)
+        self.references_widget_tab.setWidgetResizable(True)
 
         self.tabs_widget.addTab(self.tests_widget, 'Tests')
         self.tabs_widget.addTab(self.cleanup_data_widget_tab, 'Cleanup tags')
-        self.tabs_widget.addTab(self.interpret_widget, 'Interpret tags')
-        self.tabs_widget.addTab(self.process_widget, 'Process')
-        self.tabs_widget.addTab(self.items_widget, 'WD Items')
-        self.tabs_widget.addTab(self.properties_widget, 'WD Properties')
-        self.tabs_widget.addTab(self.statements_widget, 'WD Statements')
-        self.tabs_widget.addTab(self.references_widget, 'WD References')
+        self.tabs_widget.addTab(self.interpret_widget_tab, 'Interpret tags')
+        self.tabs_widget.addTab(self.items_widget_tab, 'WD Items')
+        self.tabs_widget.addTab(self.properties_widget_tab, 'WD Properties')
+        self.tabs_widget.addTab(self.statements_widget_tab, 'WD Statements')
+        self.tabs_widget.addTab(self.references_widget_tab, 'WD References')
 
         buttons_dict = {
             'sc_500': ['copy', 'add', 'save', 'delete'],
@@ -624,6 +641,7 @@ class OSMWikidataDock:
 
         self.text_edit = {}
         self.line_edit = {}
+        self.wd_properties = {}
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -679,7 +697,7 @@ class OSMWikidataDock:
         icon_path = parent_dir / 'img' / APP_ICON
         self.add_action(
             icon_path,
-            text=self.tr('fb_tools_full_audit'),
+            text=self.tr('OSM_Wikidata'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -714,20 +732,22 @@ class OSMWikidataDock:
             self.dockwidget = DockOSMWD()
             self.dockwidget.setWindowTitle("OpenStreetMap - Wikidata v{}".format(VERSION))
 
+        wd_properties_file = Path(__file__).resolve().parent / 'wd properties.pickle'
+        with open(Path(wd_properties_file), 'rb') as handle:
+            self.wd_properties = pickle.load(handle)
+
+        from pprint import  pprint
+
         cleanup_file = Path(__file__).resolve().parent / 'cleanup.json'
         with open(cleanup_file) as data_file:
             data = json.load(data_file)
-        from pprint import  pprint
-        # pprint(data)
+
         for group in data:
-            i = 0
             # pprint(group)
-            for tag in data[group]:
-                print(tag)
-                for entry in data[group][tag]:
-                    print(entry)
-                    # pprint(entry)
-                    if group == 'cleanup':
+            if group == 'cleanup':
+                for tag in data[group]:
+                    i = 0
+                    for entry in data[group][tag]:
                         for key, contents in entry.items():
                             self.text_edit[key] = OSMWDPlainTextEdit(self.dockwidget.cleanup_data_widget_tab,
                                                                      text='\n'.join(contents))
@@ -736,24 +756,68 @@ class OSMWikidataDock:
                             self.line_edit[key].setFixedWidth(140)
                             self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.text_edit[key], i, 0, 1, 3)
                             self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.line_edit[key], i, 3)
-                            print(i)
                             i += 1
-                    elif group == 'Interpret':
-                        pass
-                    elif group == 'Wikidata items':
-                        pass
-                    elif group == 'Wikidata properties':
-                        pass
-                    elif group == 'Wikidata references':
-                        pass
-                    elif group == 'Wikidata statements':
-                        pass
+            elif group == 'Interpret':
+                pass
+            elif group == 'Wikidata items':
+                pass
+            elif group == 'Wikidata properties':
+                pass
+            elif group == 'Wikidata references':
+                i = 0
+                for reference_label in data[group]:
+                    wd_property = data[group][reference_label][0]
+                    wd_value = data[group][reference_label][1]
+                    self.line_edit[reference_label] = QLineEdit(reference_label, self.dockwidget.references_widget_tab)
+                    self.line_edit[reference_label + '_' + wd_property] = PropertiesComboBox(self.wd_properties)
+                    self.line_edit[reference_label + '_' + wd_property].set_value(self.wd_properties[wd_property])
+                    self.line_edit[reference_label + '_' + wd_property].setFixedWidth(250)
+                    self.line_edit[reference_label + '_' + wd_value] = QLineEdit(wd_value, self.dockwidget.references_widget_tab)
+                    self.line_edit[reference_label + '_' + wd_value].setFixedWidth(140)
+                    self.dockwidget.references_widget_grid_layout.addWidget(self.line_edit[reference_label], i, 0)
+                    self.dockwidget.references_widget_grid_layout.addWidget(self.line_edit[reference_label + '_' + wd_property], i, 1)
+                    self.dockwidget.references_widget_grid_layout.addWidget(self.line_edit[reference_label + '_' + wd_value], i, 2)
+                    i += 1
+            elif group == 'Wikidata statements':
+                i = 0
+                for statement_label in data[group]:
+                    wd_property = data[group][statement_label][0]
+                    wd_value = data[group][statement_label][1]
+                    wd_references = data[group][statement_label][2]
+                    self.line_edit[statement_label] = QLineEdit(statement_label, self.dockwidget.references_widget_tab)
+                    self.line_edit[statement_label + '_' + wd_property] = PropertiesComboBox(self.wd_properties)
+                    self.line_edit[statement_label + '_' + wd_property].set_value(self.wd_properties[wd_property])
+                    self.line_edit[statement_label + '_' + wd_property].setFixedWidth(250)
+                    self.line_edit[statement_label + '_' + wd_value] = QLineEdit(wd_value, self.dockwidget.references_widget_tab)
+                    self.line_edit[statement_label + '_' + wd_value].setFixedWidth(140)
+                    self.line_edit[statement_label + '_' + wd_references] = QLineEdit(wd_value, self.dockwidget.references_widget_tab)
+                    self.line_edit[statement_label + '_' + wd_references].setFixedWidth(140)
+                    self.dockwidget.references_widget_grid_layout.addWidget(self.line_edit[statement_label], i, 0)
+                    self.dockwidget.references_widget_grid_layout.addWidget(self.line_edit[statement_label + '_' + wd_property], i, 1)
+                    self.dockwidget.references_widget_grid_layout.addWidget(self.line_edit[statement_label + '_' + wd_value], i, 2)
+                    self.dockwidget.references_widget_grid_layout.addWidget(self.line_edit[statement_label + '_' + wd_references], i, 2)
+                    i += 1
 
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
         self.iface.openMessageLog()
 
 
         self.dockwidget.show()
+
+    # self.site = pywikibot.Site("wikidata", "wikidata")
+    # self.repo = self.site.data_repository()
+    #
+    # def get_items(site, item_title):
+    #     """
+    #     Requires a site and search term (item_title) and returns the results.
+    #     """
+    #     params = {"action": "wbsearchentities",
+    #               "format": "json",
+    #               "language": "en",
+    #               "type": "item",
+    #               "search": item_title}
+    #     request = api.Request(site=site, **params)
+    #     return request.submit()
 
     def enable_button_and_connect_slot(self, button, method):
         """
