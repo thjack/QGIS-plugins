@@ -36,7 +36,7 @@ if __name__=="__main__":
             else:
                 fh.write(line)
 
-    zf = zipfile.ZipFile(grandparent_dir / ('OSM_Wikidata' + version + '.zip'), mode='w')
+    zf = zipfile.ZipFile(grandparent_dir / ('ActualizarMedidas' + version + '.zip'), mode='w')
 
     try:
         for f in ["OSM_Wikidata.py",
