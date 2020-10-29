@@ -401,7 +401,7 @@ class DockOSMWD(QgsDockWidget):
         self.tabs_widget.addTab(self.interpret_widget_tab, 'Catastro Comercial')
 
 
-class OSMWikidataDock:
+class ActualizarMedidasDock:
     """QGIS Plugin Implementation.
        In this class we define the functionality"""
 
@@ -513,35 +513,35 @@ class OSMWikidataDock:
         """
         if not self.dockwidget:
             self.dockwidget = DockOSMWD()
-            self.dockwidget.setWindowTitle("OpenStreetMap - Wikidata v{}".format(VERSION))
+            self.dockwidget.setWindowTitle("Gestion de Catastro EPS del Sector Saneamiento - v{}".format(VERSION))
 
-        wd_properties_file = Path(__file__).resolve().parent / 'wd properties.pickle'
-        with open(Path(wd_properties_file), 'rb') as handle:
-            self.wd_properties = pickle.load(handle)
+        # wd_properties_file = Path(__file__).resolve().parent / 'wd properties.pickle'
+        # with open(Path(wd_properties_file), 'rb') as handle:
+        #     self.wd_properties = pickle.load(handle)
 
         from pprint import  pprint
 
-        cleanup_file = Path(__file__).resolve().parent / 'cleanup.json'
-        with open(cleanup_file) as data_file:
-            data = json.load(data_file)
+        # cleanup_file = Path(__file__).resolve().parent / 'cleanup.json'
+        # with open(cleanup_file) as data_file:
+        #     data = json.load(data_file)
 
-        for group in data:
-            # pprint(group)
-            if group == 'Catastro Tecnico':
-                for tag in data[group]:
-                    i = 0
-                    for entry in data[group][tag]:
-                        for key, contents in entry.items():
-                            self.text_edit[key] = OSMWDPlainTextEdit(self.dockwidget.cleanup_data_widget_tab,
-                                                                     text='\n'.join(contents))
-                            self.text_edit[key].setMinimumHeight(len(contents) * 17 + 10)
-                            self.line_edit[key] = QLineEdit(key, self.dockwidget.cleanup_data_widget_tab)
-                            self.line_edit[key].setFixedWidth(140)
-                            self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.text_edit[key], i, 0, 1, 3)
-                            self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.line_edit[key], i, 3)
-                            i += 1
-            elif group == 'Catastro Comercial':
-                pass
+        # for group in data:
+        #     # pprint(group)
+        #     if group == 'Catastro Tecnico':
+        #         for tag in data[group]:
+        #             i = 0
+        #             for entry in data[group][tag]:
+        #                 for key, contents in entry.items():
+        #                     self.text_edit[key] = OSMWDPlainTextEdit(self.dockwidget.cleanup_data_widget_tab,
+        #                                                              text='\n'.join(contents))
+        #                     self.text_edit[key].setMinimumHeight(len(contents) * 17 + 10)
+        #                     self.line_edit[key] = QLineEdit(key, self.dockwidget.cleanup_data_widget_tab)
+        #                     self.line_edit[key].setFixedWidth(140)
+        #                     self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.text_edit[key], i, 0, 1, 3)
+        #                     self.dockwidget.cleanup_data_widget_grid_layout.addWidget(self.line_edit[key], i, 3)
+        #                     i += 1
+        #     elif group == 'Catastro Comercial':
+        #         pass
 
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
         self.iface.openMessageLog()

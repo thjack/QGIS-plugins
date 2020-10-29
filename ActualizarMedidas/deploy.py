@@ -26,7 +26,25 @@ if __name__=="__main__":
     grandparent_dir = parent_dir.parent
 
     meta = parent_dir / "metadata.txt"
-    contents = meta.read_text()
+    try:
+        contents = meta.read_text()
+    except:
+        contents = '''
+[general]
+name=Mediciones Catastro EPS
+description=Este plugin permite efectuar mediciones del catastro tecnico y comercial de las EPS del Peru de acuerdo a los lineamientos de Sunass
+version=0.1
+qgisMinimumVersion=3.10
+author=Jose Venegas
+email=jvenegasperu@gmail.com
+about=Este plugin es una prueba de concepto para las mediciones del catastro acorde a la gestión comercial y las actividades operativas de campo
+tracker=
+tags=python, EPS, Sunass, Catastro Tecnico, Catastro Comercial
+category=Catastro
+icon=img/actualizarMedidas.svg
+experimental=True
+deprecated=False'''
+
     with open(meta, 'w') as fh:
         for line in contents.split('\n'):
             if line.startswith('version'):
@@ -43,7 +61,7 @@ if __name__=="__main__":
                   "__init__.py",
                   "metadata.txt",
                   "deploy.py",
-                  "img/OpenStreetMap_Wikidata_logo.svg",
+                  "img/actualizarMedidas.svg",
                   ]:
             zf.write(parent_dir / f, compress_type=compression, arcname=str(Path("OSM_Wikidata") / f))
     except Exception as e:

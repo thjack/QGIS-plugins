@@ -1,14 +1,14 @@
 [general]
-name=Mediciones Catastro EPS
-description=Este plugin efectua mediciones del catastro tecnico y comercial de las EPS del Peru de acuerdo a los lineamientos de Sunass
+name=OSM_Wikidata
+description=This plugin is a proof of concept for interchanging data between OSM and Wikidata
 version=0.1
-qgisMinimumVersion=3.10
-author=Jose Venegas
-email=jvenegasperu@gmail.com
-about=Este plugin simplifica las gestion para contabilizar y efectuar mediciones del catastro acorde a la gestión comercial y las actividades operativas de campo
+qgisMinimumVersion=3.4
+author=Jo
+email=winfixit@gmail.com
+about=This plugin is a proof of concept for interchanging data between OSM and Wikidata
 tracker=
-tags=python, EPS, Sunass, Catastro Tecnico, Catastro Comercial, Saneamiento
-category=Catastro
-icon=img/actualizarMedidas.svg
+tags=python, OpenStreetMap, Wikidata
+category=OpenStreetMap
+icon=img/OpenStreetMap_Wikidata_logo.svg
 experimental=True
 deprecated=False
