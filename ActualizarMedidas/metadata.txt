@@ -1,6 +1,6 @@
 [general]
 name=Mediciones Catastro EPS
-description=Efectua mediciones del catastro tecnico y comercial de las EPS - Peru de acuerdo a los lineamientos de Sunass
+description=Efectua mediciones del catastro tecnico y comercial de las EPS - Peru de acuerdo lineamientos de Sunass
 version=0.1
 qgisMinimumVersion=3.10
 author=Jose Venegas
